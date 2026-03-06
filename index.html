@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Studio - Custom AI Art & Editing Services</title>
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --primary-dark: #7c3aed;
+            --secondary: #ec4899;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --gray: #64748b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--light);
+        }
+        
+        header {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+        }
+        
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #94a3b8;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: white;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+        }
+        
+        .btn-outline {
+            border: 2px solid white;
+            color: white;
+            background: transparent;
+        }
+        
+        .btn-outline:hover {
+            background: white;
+            color: var(--dark);
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: white;
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(236, 72, 153, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            position: relative;
+        }
+        
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            color: #94a3b8;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+        }
+        
+        .hero .btn {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .services {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .section-title p {
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        
+        .service-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .service-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .service-card h3 {
+            margin-bottom: 0.75rem;
+            font-size: 1.3rem;
+        }
+        
+        .service-card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+        
+        .service-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .service-price span {
+            font-size: 0.9rem;
+            color: var(--gray);
+            font-weight: normal;
+        }
+        
+        .how-it-works {
+            background: var(--dark);
+            color: white;
+            padding: 5rem 2rem;
+        }
+        
+        .how-it-works h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .steps-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .step {
+            text-align: center;
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+        
+        .step h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .step p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        .gallery {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+        
+        .gallery-item {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            transition: transform 0.3s;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .testimonials {
+            background: #f1f5f9;
+            padding: 5rem 2rem;
+        }
+        
+        .testimonials h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .testimonials-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+        
+        .testimonial {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+        
+        .testimonial-author {
+            font-weight: bold;
+            color: var(--dark);
+        }
+        
+        .pricing {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .pricing-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .pricing-card:hover {
+            transform: scale(1.02);
+        }
+        
+        .pricing-card.featured {
+            border: 2px solid var(--primary);
+            position: relative;
+        }
+        
+        .pricing-card.featured::before {
+            content: "Most Popular";
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+        
+        .price span {
+            font-size: 1rem;
+            color: var(--gray);
+        }
+        
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+            margin: 1.5rem 0;
+        }
+        
+        .pricing-features li {
+            padding: 0.5rem 0;
+            color: var(--gray);
+        }
+        
+        .pricing-features li::before {
+            content: "✓ ";
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .cta {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+        
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cta p {
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        footer {
+            background: var(--darker);
+            color: #94a3b8;
+            padding: 3rem 2rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-col h4 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-col ul {
+            list-style: none;
+        }
+        
+        .footer-col li {
+            padding: 0.25rem 0;
+        }
+        
+        .footer-col a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-col a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 2rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid #1e293b;
+            text-align: center;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <div class="logo-icon">🎨</div>
+                AI Image Studio
+            </div>
+            <ul class="nav-links">
+                <li><a href="#services">Services</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <a href="#contact" class="btn btn-primary">Get Started</a>
+        </nav>
+    </header>
+    
+    <section class="hero">
+        <h1>Stunning AI Images<br><span>Made to Order</span></h1>
+        <p>Professional AI image generation and editing services. From text-to-image art to photo restoration, we bring your vision to life.</p>
+        <div class="hero-buttons">
+            <a href="#services" class="btn btn-primary">View Services</a>
+            <a href="#gallery" class="btn btn-outline">See Our Work</a>
+        </div>
+    </section>
+    
+    <section class="services" id="services">
+        <div class="section-title">
+            <h2>Our Services</h2>
+            <p>Professional AI-powered image services for individuals and businesses</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <span class="badge">New</span>
+                <div class="service-icon">🖼️</div>
+                <h3>Text-to-Image Art</h3>
+                <p>Simply describe what you want and our AI creates stunning, unique artwork. Perfect for gifts, home decor, or digital content.</p>
+                <div class="service-price">From $9.99 <span>/image</span></div>
+            </div>
+            
+            <div class="service-card">
+                <span class="badge">Popular</span>
+                <div class="service-icon">👤</div>
+                <h3>Face Swap</h3>
+                <p>Replace faces in any photo with incredibly realistic results. Celebrity faces, personal photos, or custom characters.</p>
+                <div class="service-price">From $14.99 <span>/face swap</span></div>
+            </div>
+            
+            <div class="service-card">
+                <span class="badge">Bestseller</span>
+                <div class="service-icon">👗</div>
+                <h3>Virtual Try-On</h3>
+                <p>Try any outfit on yourself without going to a store. Perfect for online shopping, fashion influencers, and e-commerce.</p>
+                <div class="service-price">From $19.99 <span>/outfit</span></div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">✨</div>
+                <h3>Photo Enhancement</h3>
+                <p>AI-powered upscaling to 4K, sharpening, color correction, and noise removal. Make old photos look brand new.</p>
+                <div class="service-price">From $7.99 <span>/photo</span></div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">🎭</div>
+                <h3>Style Transfer</h3>
+                <p>Transform your photos into any artistic style - anime, oil painting, sketch, cyberpunk, and more.</p>
+                <div class="service-price">From $12.99 <span>/style</span></div>
+            </div>
+            
+            <div class="service-card">
+                <span class="badge">Trending</span>
+                <div class="service-icon">📸</div>
+                <h3>AI Headshots</h3>
+                <p>Professional-looking headshots from your casual photos. Perfect for LinkedIn, business profiles, and resumes.</p>
+                <div class="service-price">From $24.99 <span>/set of 10</span></div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">🖌️</div>
+                <h3>Custom Portraits</h3>
+                <p>AI-generated portraits in any style - fantasy, sci-fi, historical, portrait, and more. Unique artwork for your space.</p>
+                <div class="service-price">From $19.99 <span>/portrait</span></div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">🔄</div>
+                <h3>Photo Restoration</h3>
+                <p>Restore old, damaged, or blurry photos. Fix scratches, enhance colors, and bring memories back to life.</p>
+                <div class="service-price">From $14.99 <span>/photo</span></div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">👔</div>
+                <h3>Clothing Change</h3>
+                <p>Change outfits in photos instantly. Different styles, colors, or seasons - no photoshoot needed.</p>
+                <div class="service-price">From $16.99 <span>/change</span></div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">🎨</div>
+                <h3>Background Removal</h3>
+                <p>Instant, precise background removal for product photos, portraits, and any image. Clean cutouts every time.</p>
+                <div class="service-price">From $4.99 <span>/image</span></div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">🧑‍🎤</div>
+                <h3>Profile Picture Packs</h3>
+                <p>Get 10+ unique profile pictures in different styles. Perfect for influencers, streamers, and social media.</p>
+                <div class="service-price">From $29.99 <span>/pack</span></div>
+            </div>
+            
+            <div class="service-card">
+                <span class="badge">Business</span>
+                <div class="service-icon">🏢</div>
+                <h3>Bulk Orders</h3>
+                <p>Need 100+ images? Get discounted rates for bulk orders. Perfect for e-commerce, marketing campaigns, and print-on-demand.</p>
+                <div class="service-price">From $0.99 <span>/image (100+)</span></div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="how-it-works">
+        <h2>How It Works</h2>
+        <div class="steps-grid">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h4>Choose a Service</h4>
+                <p>Browse our services and select what you need</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h4>Describe Your Vision</h4>
+                <p>Tell us what you want or upload your reference photo</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h4>Receive Your Image</h4>
+                <p>Get your professionally generated image within 24 hours</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="gallery" id="gallery">
+        <div class="section-title">
+            <h2>Our Work</h2>
+            <p>Sample of what we can create</p>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item">🖼️</div>
+            <div class="gallery-item">👤</div>
+            <div class="gallery-item">👗</div>
+            <div class="gallery-item">🎭</div>
+            <div class="gallery-item">🌟</div>
+            <div class="gallery-item">🦸</div>
+            <div class="gallery-item">🌸</div>
+            <div class="gallery-item">🏙️</div>
+        </div>
+    </section>
+    
+    <section class="testimonials">
+        <h2>What Our Clients Say</h2>
+        <div class="testimonials-grid">
+            <div class="testimonial">
+                <p class="testimonial-text">"Incredible results! I sent in a blurry old photo of my grandparents and they restored it better than I could have imagined. Now it's framed on my wall."</p>
+                <p class="testimonial-author">- Sarah M., California</p>
+            </div>
+            <div class="testimonial">
+                <p class="testimonial-text">"The virtual try-on saved me so much time shopping. Got exactly what I wanted without returning anything. Will definitely order again!"</p>
+                <p class="testimonial-author">- Mike T., New York</p>
+            </div>
+            <div class="testimonial">
+                <p class="testimonial-text">"We use their bulk service for our e-commerce store. Amazing quality at unbeatable prices. Our product images have never looked better."</p>
+                <p class="testimonial-author">- Lisa R., E-commerce Owner</p>
+            </div>
+            <div class="testimonial">
+                <p class="testimonial-text">"The AI headshots are no joke - I got 10 professional-looking photos for my LinkedIn for a fraction of what a photographer would cost."</p>
+                <p class="testimonial-author">- David K., Professional</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="pricing" id="pricing">
+        <div class="section-title">
+            <h2>Simple Pricing</h2>
+            <p>No subscriptions, pay only for what you need</p>
+        </div>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>Single</h3>
+                <div class="price">$9.99<span>/image</span></div>
+                <ul class="pricing-features">
+                    <li>1 custom image</li>
+                    <li>2 revision rounds</li>
+                    <li>24hr delivery</li>
+                    <li>High resolution (4K)</li>
+                    <li>Commercial rights</li>
+                </ul>
+                <a href="#contact" class="btn btn-outline">Order Now</a>
+            </div>
+            <div class="pricing-card featured">
+                <h3>Bundle</h3>
+                <div class="price">$49.99<span>/5 images</span></div>
+                <ul class="pricing-features">
+                    <li>5 custom images</li>
+                    <li>Unlimited revisions</li>
+                    <li>12hr delivery</li>
+                    <li>High resolution (4K)</li>
+                    <li>Commercial rights</li>
+                    <li>Priority support</li>
+                </ul>
+                <a href="#contact" class="btn btn-primary">Order Now</a>
+            </div>
+            <div class="pricing-card">
+                <h3>Pro</h3>
+                <div class="price">$199<span>/month</span></div>
+                <ul class="pricing-features">
+                    <li>50 images/month</li>
+                    <li>Custom prompts included</li>
+                    <li>Same-day delivery</li>
+                    <li>Source files included</li>
+                    <li>Full commercial rights</li>
+                    <li>Dedicated support</li>
+                </ul>
+                <a href="#contact" class="btn btn-outline">Contact Us</a>
+            </div>
+        </div>
+    </section>
+    
+    <section class="cta" id="contact">
+        <h2>Ready to Create Something Amazing?</h2>
+        <p>Tell us what you need and we'll bring your vision to life.</p>
+        <a href="#" class="btn" style="background: white; color: var(--primary);">Start Your Order</a>
+    </section>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <h4>AI Image Studio</h4>
+                <p>Professional AI image services for everyone.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="#services">Text-to-Image</a></li>
+                    <li><a href="#services">Face Swap</a></li>
+                    <li><a href="#services">Virtual Try-On</a></li>
+                    <li><a href="#services">Photo Restoration</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Terms</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">How It Works</a></li>
+                    <li><a href="#">File Guidelines</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 AI Image Studio. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
